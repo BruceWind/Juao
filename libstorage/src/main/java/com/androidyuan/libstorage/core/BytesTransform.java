@@ -1,7 +1,5 @@
 package com.androidyuan.libstorage.core;
 
-import com.sun.istack.internal.NotNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,7 +19,7 @@ public final class BytesTransform {
      * @param bytes
      * @return
      */
-    public static Object bytesToSerializable(@NotNull byte[] bytes) {
+    public static Object bytesToSerializable(byte[] bytes) {
         Object obj = null;
         ByteArrayInputStream byteArrayInputStream = null;
         ObjectInputStream objectInputStream = null;
@@ -60,7 +58,7 @@ public final class BytesTransform {
      * @param obj
      * @return
      */
-    public static byte[] serializableToBytes(@NotNull Serializable obj) {
+    public static byte[] serializableToBytes(Serializable obj) {
         byte[] bytes = null;
         ByteArrayOutputStream byteArrayOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
