@@ -2,7 +2,7 @@ package com.example.hugestfastestmemorycache;
 
 import android.util.Log;
 
-import com.androidyuan.libstorage.core.UUIDHexGenerator;
+import com.androidyuan.libcache.core.UUIDHexGenerator;
 
 import org.junit.Test;
 
