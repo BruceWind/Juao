@@ -1,3 +1,4 @@
 rootProject.name='HugestFastestMemoryCache'
 include ':app'
-include ':libstorage'
+//include ':libstorage'
+include ':libandroidyuancache'

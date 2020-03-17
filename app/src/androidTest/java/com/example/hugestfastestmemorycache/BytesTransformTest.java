@@ -2,9 +2,9 @@ package com.example.hugestfastestmemorycache;
 
 import android.content.Context;
 
-import com.androidyuan.libstorage.diskcache.DiskCahcheHelper;
-import com.androidyuan.libstorage.diskcache.DiskLruCache;
-import com.androidyuan.libstorage.core.BytesTransform;
+import com.androidyuan.libcache.diskcache.DiskCacheHelper;
+import com.androidyuan.libcache.diskcache.DiskLruCache;
+import com.androidyuan.libcache.core.BytesTransform;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class BytesTransformTest {
 
     private DiskLruCache mDiskCache;
 
-    private DiskCahcheHelper mDiskHelper;
+    private DiskCacheHelper mDiskHelper;
 
     @Test
     public void name() {
@@ -33,7 +33,7 @@ public class BytesTransformTest {
 
         //--------------  test DiskCahcheHelper: ---------
         try {
-            mDiskHelper = new DiskCahcheHelper(appContext.getExternalCacheDir().toString());
+            mDiskHelper = new DiskCacheHelper(appContext.getExternalCacheDir().toString());
 
             final String key = "sasdfadgfd";
             boolean value = mDiskHelper.save(key, BytesTransform.serializableToBytes(obj));
