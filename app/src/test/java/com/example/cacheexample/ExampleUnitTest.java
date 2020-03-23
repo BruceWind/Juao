@@ -1,8 +1,8 @@
-package com.example.hugestfastestmemorycache;
+package com.example.cacheexample;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

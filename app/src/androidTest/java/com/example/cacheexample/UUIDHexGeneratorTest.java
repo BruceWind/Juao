@@ -1,4 +1,4 @@
-package com.example.hugestfastestmemorycache;
+package com.example.cacheexample;
 
 import android.util.Log;
 
@@ -14,7 +14,7 @@ public class UUIDHexGeneratorTest {
 
     @Test
     public void test() {
-        for(int index =0;index<100;index++) {
+        for (int index = 0; index < 100; index++) {
             Log.w(TAG, generator.generate());
         }
 
