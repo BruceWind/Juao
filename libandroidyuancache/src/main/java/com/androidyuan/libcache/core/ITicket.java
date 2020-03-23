@@ -1,14 +1,19 @@
 package com.androidyuan.libcache.core;
 
-public interface ITicket {
+public interface ITicket<T> {
 
     String getId();
 
-    void setStatus();
+    void setUuid(String uuid);
 
-    void getStatus();
+    void onCachedDisk();
 
-    void setNativeAddress(long address);
+    void setStatus(int status);
+
+    int getStatus();
+
+    void onCachedNative(int address);
+
     int getNativeAddress();
 
 
@@ -18,4 +23,6 @@ public interface ITicket {
 
     void resume(byte[] bytes);
 
+
+    T getBean();
 }

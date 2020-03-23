@@ -15,10 +15,15 @@ extern "C" {
 #endif
 
 
-JNIEXPORT jbyteArray JNICALL Java_com_androidyuan_libcache_nativecache_NativeEntry_popData(JNIEnv *env,jobject obj,jint point);
-JNIEXPORT jboolean JNICALL Java_com_androidyuan_libcache_nativecache_NativeEntry_removeData(JNIEnv *env,jobject obj,jint point);
-JNIEXPORT jint JNICALL Java_com_androidyuan_libcache_nativecache_NativeEntry_put(JNIEnv *env,jobject obj,jbyteArray data);
-JNIEXPORT void JNICALL Java_com_androidyuan_libcache_nativecache_NativeEntry_release(JNIEnv *env, jobject obj);
+JNIEXPORT jbyteArray JNICALL
+Java_com_androidyuan_libcache_fastcache_NativeEntry_popData(JNIEnv *env, jobject obj, jint point);
+JNIEXPORT jboolean JNICALL
+Java_com_androidyuan_libcache_fastcache_NativeEntry_removeData(JNIEnv *env, jobject obj,
+                                                               jint point);
+JNIEXPORT jint JNICALL
+Java_com_androidyuan_libcache_fastcache_NativeEntry_put(JNIEnv *env, jobject obj, jbyteArray data);
+JNIEXPORT void JNICALL
+Java_com_androidyuan_libcache_fastcache_NativeEntry_release(JNIEnv *env, jobject obj);
 
 #ifdef __cplusplus
 }

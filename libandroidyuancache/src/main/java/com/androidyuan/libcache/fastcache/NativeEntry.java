@@ -1,4 +1,4 @@
-package com.androidyuan.libcache.nativecache;
+package com.androidyuan.libcache.fastcache;
 
 public final class NativeEntry {
 
@@ -8,28 +8,30 @@ public final class NativeEntry {
 
     /**
      * @param data
-     * @return point of 'C', reulst is int64 due to point is int64 in 'C'.
+     * @return result is a increase number.
      */
-    public static native int put(byte[] data);
+    public synchronized static native int put(byte[] data);
 
     /**
      * remove from native.
      * If hasnot been existed in native return false.
+     * pls don't call this method due to that call this method will cause statistic is wrong.
+     *
      * @param point
      * @return false : maybe has been cleaned or poped.
      */
-    public static native boolean removeData(int point);
+    public synchronized static native boolean removeData(int point);
 
     /**
      * @param point this prarameter was ceated by  {@NativeEntry#put}.
      * @return
      */
-    public static native byte[] popData(int point);
+    public synchronized static native byte[] popData(int point);
 
     /**
      * Release all of data from native.
      * After relase all of data,you can put data again.
      */
-    public static native void release();
+    public synchronized static native void release();
 
 }

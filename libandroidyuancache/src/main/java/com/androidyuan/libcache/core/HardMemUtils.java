@@ -13,7 +13,7 @@ public final class HardMemUtils {
     private static final double DEFAULT_USING_SIZE = 500;
 
     /**
-     * get a proper size,I'm going to using the size to set limitation of native cache.
+     * Get a proper size,I'm going to using the size to set limitation of native cache.
      *
      * If you dont know '/proc/meminfo', pls look at {@link "http://www.programmersought.com/article/58052439487/"}.
      *
