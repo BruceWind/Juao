@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DiskCacheHelper extends BaseAssistant {
 
@@ -89,7 +91,7 @@ public class DiskCacheHelper extends BaseAssistant {
         return hasBeenSavedOnDisk(key);
     }
 
-    private boolean hasBeenSavedOnDisk(String key){
+    private boolean hasBeenSavedOnDisk(String key) {
         if (mDiskCache != null) {
             try {
                 return mDiskCache.get(key) != null;
@@ -103,7 +105,7 @@ public class DiskCacheHelper extends BaseAssistant {
 
     public ITicket pop(String uuid) {
         ITicket iTicket = super.pop(uuid);
-        if (iTicket.getStatus() == TicketStatus.CACHE_STATUS_WAS_LOST) {
+        if (iTicket.getStatus() == TicketStatus.CACHE_STATUS_ONDISK) {
             iTicket.resume(read(uuid));
         }
         return iTicket;
@@ -112,12 +114,16 @@ public class DiskCacheHelper extends BaseAssistant {
     @Override
     public void clearAllCache() {
         if (mDiskCache != null) {
-            try {
-                mDiskCache.close();
-                super.clearAllCache();
-            } catch (IOException e) {
-                e.printStackTrace();
+            Map<String, ITicket> tempCache = new HashMap<>();
+            super.moveAll(tempCache);
+            for (String key : tempCache.keySet()) {
+                try {
+                    mDiskCache.remove(key);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+
         }
     }
 
@@ -137,6 +143,12 @@ public class DiskCacheHelper extends BaseAssistant {
         }
     }
 
+    /**
+     * just record ticket.
+     *
+     * @param ticket
+     * @return
+     */
     public boolean onlyPut(ITicket ticket) {
         super.put(ticket);
         return true;

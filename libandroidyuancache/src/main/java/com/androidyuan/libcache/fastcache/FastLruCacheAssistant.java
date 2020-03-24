@@ -3,6 +3,7 @@ package com.androidyuan.libcache.fastcache;
 
 import com.androidyuan.libcache.core.BaseAssistant;
 import com.androidyuan.libcache.core.ITicket;
+import com.androidyuan.libcache.core.TicketStatus;
 
 import java.util.AbstractQueue;
 import java.util.Iterator;
@@ -57,6 +58,7 @@ public class FastLruCacheAssistant extends BaseAssistant {
             String lruKey = queue.poll();
             if (lruKey != null) {//really important .
                 ITicket outValue = super.pop(lruKey);
+                outValue.setStatus(TicketStatus.CACHE_STATUS_ON_CACHING);
                 mOnFulledListener.onMoveToDisk(outValue, removeFromNative(outValue.getNativeAddress()));
             }
         }

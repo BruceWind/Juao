@@ -8,9 +8,9 @@ public interface ITicket<T> {
 
     void onCachedDisk();
 
-    void setStatus(int status);
-
     int getStatus();
+
+    void setStatus(int status);
 
     void onCachedNative(int address);
 

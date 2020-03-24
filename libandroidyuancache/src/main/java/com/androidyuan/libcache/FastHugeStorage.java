@@ -16,26 +16,23 @@ import java.util.concurrent.Executors;
 
 /**
  * The  {@link FastHugeStorage#put(ITicket)} } will return a UUID.It is a String type.
- * When you want to pop data from {@link }FastHugeStorage},you has to call {@link FastHugeStorage#popTicket(String)}.
+ * When you want to pop data from {@link }FastHugeStorage}, you has to call {@link FastHugeStorage#popTicket(String)}.
  */
 public class FastHugeStorage implements OnFulledListener {
     private static final String TAG = "StorageManager";
 
     private static final int COUTN_THREAD = 8;
-    private ExecutorService threadPool = Executors.newFixedThreadPool(COUTN_THREAD);
-
+    private static FastHugeStorage sStorage;
     private final Handler handler = new Handler(Looper.getMainLooper());
 
 
     private final UUIDHexGenerator uuidGenerator = new UUIDHexGenerator();
-
+    private ExecutorService threadPool = Executors.newFixedThreadPool(COUTN_THREAD);
     private DiskCacheHelper diskCacheHelper;
     private FastLruCacheAssistant fastLruCacheAssistant;
 
     private FastHugeStorage() {
     }
-
-    private static FastHugeStorage sStorage;
 
     public static FastHugeStorage getInstance() {
         if (sStorage == null) {
@@ -45,10 +42,7 @@ public class FastHugeStorage implements OnFulledListener {
     }
 
     /**
-     * pls set same {@param config} when you call this method everytimes. if you give a different dir,cache file cant clean.
-     * pls set your versioncode of app due to that different codes could cause crashes.
-     *
-     * I don't open about cache size. If you want to know the size,pls look at {@DiskCacheHelper} and {@FastLruCacheAssistant}.
+     * pls set same {@param config} when you call this method. If you give a different dir,cache file can't clean.I will clear data when you call {@link FastHugeStorage#init(CacheConfig)}.
      *
      * @param config
      */
@@ -56,13 +50,7 @@ public class FastHugeStorage implements OnFulledListener {
         try {
             fastLruCacheAssistant = new FastLruCacheAssistant(config.getSizeOfMemCache(), this);
             diskCacheHelper = new DiskCacheHelper(config.getDiskDir(), config.getSizeOfDiskCache());
-
-            threadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    diskCacheHelper.clearAllCache();
-                }
-            });
+            //clear();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +66,7 @@ public class FastHugeStorage implements OnFulledListener {
             if (fastLruCacheAssistant.put(ticket)) {
                 return ticket.getId();
             }
-            if (diskCacheHelper.put(ticket)) {
+            if (diskCacheHelper.put(ticket)) {//I think this line always can't be run.
                 return ticket.getId();
             }
             return null;
@@ -127,7 +115,6 @@ public class FastHugeStorage implements OnFulledListener {
     @Override
     public void onMoveToDisk(final ITicket value, final byte[] bytes) {
         if (value == null) return;
-
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -149,5 +136,28 @@ public class FastHugeStorage implements OnFulledListener {
 
     }
 
+    /**
+     * After you call this method,you still can call {@FastHugeStorage#popTicket()}.
+     */
+    public void clear() {
+        threadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                fastLruCacheAssistant.clearAllCache();
+                diskCacheHelper.clearAllCache();
+            }
+        });
+    }
 
+
+    /**
+     * @return result size doesn't contain disk cache size.
+     */
+    public long getMemCacheUsage() {
+        return fastLruCacheAssistant.getLruCacheStatistics().getUsage();
+    }
+
+    public long getDiskCacheUsage() {
+        return 0;//TODO
+    }
 }

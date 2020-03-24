@@ -48,4 +48,14 @@ public abstract class BaseAssistant implements ICacheAssistant {
         cache.clear();
     }
 
+    /**
+     * When cache is pulled all item,it will be clear.
+     *
+     * @param temptyMap
+     */
+    protected synchronized void moveAll(Map<String, ITicket> temptyMap) {
+        temptyMap.putAll(cache);
+        cache.clear();
+    }
+
 }
