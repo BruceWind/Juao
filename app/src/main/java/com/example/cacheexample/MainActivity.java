@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        //If you want to set the size,pls look at {@CacheConfig}.
         FastHugeStorage.getInstance().init(new CacheConfig.Builder().setDiskDir(getExternalCacheDir().toString()).build());
 
         super.onCreate(savedInstanceState);
@@ -34,5 +35,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, SerializableActivity.class));
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FastHugeStorage.getInstance().clear();
+    }
 }

@@ -1,13 +1,10 @@
 package com.androidyuan.libcache.core;
 
 public class UUIDHexGenerator {
-    private String sep = "";
-
-    private final int SEED =404*5;
-
-    private static short counter = (short) 0;
     private static final int JVM = (int) (System.currentTimeMillis() >>> 8);
-
+    private static short counter = (short) 0;
+    private final int SEED = 404 * 5;
+    private String sep = "";
 
     /**
      * Unique down to millisecond
@@ -61,7 +58,6 @@ public class UUIDHexGenerator {
             return counter++;
         }
     }
-
 
 
 }

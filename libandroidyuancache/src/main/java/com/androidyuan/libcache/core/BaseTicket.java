@@ -24,13 +24,13 @@ public abstract class BaseTicket<T> implements ITicket<T> {
     }
 
     @Override
-    public void setStatus(int s) {
-        status = s;
+    public int getStatus() {
+        return status;
     }
 
     @Override
-    public int getStatus() {
-        return status;
+    public void setStatus(int s) {
+        status = s;
     }
 
     @Override

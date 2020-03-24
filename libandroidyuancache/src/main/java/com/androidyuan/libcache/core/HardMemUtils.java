@@ -14,7 +14,7 @@ public final class HardMemUtils {
 
     /**
      * Get a proper size,I'm going to using the size to set limitation of native cache.
-     *
+     * <p>
      * If you dont know '/proc/meminfo', pls look at {@link "http://www.programmersought.com/article/58052439487/"}.
      *
      * <p>

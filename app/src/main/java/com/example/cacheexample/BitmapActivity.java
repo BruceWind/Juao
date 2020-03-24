@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,7 +33,7 @@ public class BitmapActivity extends Activity {
 
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new BitmapAdapter(getTicketIds()));
+        recyclerView.setAdapter(new BitmapAdapter(getTicketIds(), (TextView) findViewById(R.id.txt_cache_size)));
 
 
     }

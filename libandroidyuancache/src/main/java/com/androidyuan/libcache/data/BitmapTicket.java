@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 /**
  * After you put this bitmap ,you can't use it due to it is recycled.
  * Device version Higher than 8.0 that don't has to use this class,because bitmap will storage on native memory on higher device.
- *
+ * <p>
  * Remind:
  */
 public class BitmapTicket extends BaseTicket<Bitmap> {
