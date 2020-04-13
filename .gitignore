@@ -211,3 +211,4 @@ lint/tmp/
 hs_err_pid*
 
 app/libs/
+*.plantuml
