@@ -1,4 +1,5 @@
 # HugestMemroyStorage
+[English](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README.md)
 如果你有很大的内存需求,或许您需要这个库帮您做内存cache。
 
 当您有巨量的内存需要在Android平台进行计算时，或许您也会遇到内存吃紧的问题，所以我做了这个库。（当然，有这种需求的人不多）
