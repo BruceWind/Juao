@@ -29,9 +29,12 @@ Now,cache for Bitmap, Parcelable, and Serializable is supported by **FastHugeSto
 But bytes will be developed in the future,I'm Sorry.
 
 
-## Build
+## Build 
+
+![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)
+
 1. Version of Android Studio must above V3.6.
-2. I built with 'NDK R20' and never build with other versions of ndk. I can't promise it successfully build on other version.You can try.
+2. I built with NDK r20  and never build with other versions of ndk. I can't promise it successfully build on other version.You can try.
 3. Proguard :
 ```
 -keepclasseswithmembernames class * {
