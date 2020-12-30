@@ -1,4 +1,4 @@
-# HugestMemroyStorage
+# HugestMemroyStorage ![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)
 
 [中文](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README_zh.md)
 
@@ -26,14 +26,13 @@ very large, but often the memory that you requested cant cover 40% of the physic
 
 You can use this library to cache such a large amount of memory.
 
-Currently,caching for Bitmap, Parcelable, and Serializable were supported by **HugestFastestMemoryCache**. Other types are cann't be supported. 
+Currently,caching for Bitmap, Parcelable, and Serializable were supported by **HugestFastestMemoryCache**. It couldn't support other types. 
 
-But bytes will be developed in the future,I'm Sorry.
+May I will develop caching byte[] in the future.
 
 
 ## Build 
 
-![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)
 
 1. Version of Android Studio must be above V3.6.
 2. I built with NDK r20  and never build with other versions of ndk. I can't promise it successfully build on other version.You can try.
