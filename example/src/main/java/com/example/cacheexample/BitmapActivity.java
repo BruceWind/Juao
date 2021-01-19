@@ -53,7 +53,7 @@ public class BitmapActivity extends Activity {
 
         int beginY = 0;
         while (beginY < hei) {
-            int cutHei = (hei - beginY) > 100 ? 100 : (hei - beginY);
+            int cutHei = Math.min((hei - beginY), 100);
             Bitmap temp = Bitmap.createBitmap(bitmap, 0, beginY, wi, cutHei);
             list.add(FastHugeStorage.getInstance().put(new BitmapTicket(Bitmap.createBitmap(temp))));
             beginY += (cutHei + 1);

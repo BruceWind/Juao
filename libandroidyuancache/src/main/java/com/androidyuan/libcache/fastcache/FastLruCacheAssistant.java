@@ -1,6 +1,8 @@
 package com.androidyuan.libcache.fastcache;
 
 
+import android.util.Log;
+
 import com.androidyuan.libcache.core.BaseAssistant;
 import com.androidyuan.libcache.core.ITicket;
 import com.androidyuan.libcache.core.TicketStatus;
@@ -72,17 +74,21 @@ public class FastLruCacheAssistant extends BaseAssistant {
     }
 
     private byte[] removeFromNative(final int address) {
+        final long begin = System.nanoTime();
         byte[] result = NativeEntry.popData(address);
         if (result != null) {
+            Log.i("XXA", "resume size : " + result.length + " time:" + (System.nanoTime() - begin));
             lruCacheStatistics.onRecycleSpace(result.length);
         }
         return result;
     }
 
-
     private boolean putToNative(final ITicket ticket) {
         byte[] data = ticket.getData();
+
+        final long begin = System.nanoTime();
         final int address = NativeEntry.put(data);
+        Log.i("XXA", "put size : " + data.length + " time:" + (System.nanoTime() - begin));
         if (address != 0) {
             ticket.onCachedNative(address);
             lruCacheStatistics.onApplySpace(data.length);
