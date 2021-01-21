@@ -15,10 +15,11 @@ import java.nio.ByteBuffer;
  */
 public class BitmapTicket extends BaseTicket<Bitmap> {
 
-    private int width, height = 0;
-    private Bitmap.Config config;
-
-    private Bitmap bitmap;
+    private final int width;
+    private final Bitmap.Config config;
+    private final int size;
+    private int height = 0;
+    private volatile Bitmap bitmap;
 
 
     public BitmapTicket(Bitmap bitmap) {
@@ -30,6 +31,7 @@ public class BitmapTicket extends BaseTicket<Bitmap> {
         width = bitmap.getWidth();
         height = bitmap.getHeight();
         config = bitmap.getConfig();
+        size = bitmap.getByteCount();
     }
 
     /**
@@ -38,15 +40,16 @@ public class BitmapTicket extends BaseTicket<Bitmap> {
      * @return
      */
     @Override
-    public byte[] getData() {
+    public ByteBuffer toNativeBuffer() {
         if (bitmap.isRecycled())
-            throw new IllegalArgumentException("Can't call getData() after was emptied;");
+            throw new IllegalArgumentException("Can't call toNativeBuffer() after was emptied;");
 
-        int bytes = bitmap.getByteCount();
 
-        ByteBuffer buf = ByteBuffer.allocate(bytes);
-        bitmap.copyPixelsToBuffer(buf);
-        return buf.array();
+        ByteBuffer buf = ByteBuffer.allocateDirect(size);
+        synchronized (this) {
+            bitmap.copyPixelsToBuffer(buf);
+        }
+        return buf;
     }
 
     @Override
@@ -62,15 +65,19 @@ public class BitmapTicket extends BaseTicket<Bitmap> {
      */
     @Override
     public void emptyData() {
-        bitmap.recycle();//after empty data,memory is clear. this bitmap can't be used again.
-        bitmap = null;//doesnt matter.
+        synchronized (this) {
+            bitmap.recycle();//after empty data,memory is clear. this bitmap can't be used again.
+            bitmap = null;//doesnt matter.
+        }
     }
 
     @Override
-    public void resume(byte[] bytes) {
-        if (bytes != null) {
+    public void resume() {
+        synchronized (this) {
             bitmap = Bitmap.createBitmap(width, height, config);
-            bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));//resume data
+            byte[] bytes = buffer.array();
+            bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(bytes));//cant make buffer directly being method param,
+            buffer.clear();
         }
     }
 
@@ -81,5 +88,10 @@ public class BitmapTicket extends BaseTicket<Bitmap> {
             throw new IllegalArgumentException("It was being recycled.");
         }
         return bitmap;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
     }
 }

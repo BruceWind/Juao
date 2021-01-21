@@ -5,6 +5,7 @@ import com.androidyuan.libcache.core.BaseAssistant;
 import com.androidyuan.libcache.core.ITicket;
 import com.androidyuan.libcache.core.TicketStatus;
 
+import java.nio.ByteBuffer;
 import java.util.AbstractQueue;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -15,7 +16,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class FastLruCacheAssistant extends BaseAssistant {
 
 
-    private OnFulledListener mOnFulledListener;
+    private final OnFulledListener mOnFulledListener;
 
     private volatile AbstractQueue<String> queue = null;//this property is used to make lru algorithm.
 
@@ -28,18 +29,20 @@ public class FastLruCacheAssistant extends BaseAssistant {
     }
 
 
-    public ITicket pop(final String key) {
+    public synchronized ITicket pop(final String key) {
         if (queue.contains(key)) {
             //Recently accessed, hence move it to the tail
             queue.remove(key);
             ITicket cacheValue = super.pop(key);
-            cacheValue.resume(removeFromNative(cacheValue.getNativeAddress()));
+            cacheValue.resume();
+
+            lruCacheStatistics.onRecycleSpace(cacheValue.getSize());
             return cacheValue;
         }
         return null;
     }
 
-    public boolean put(final ITicket value) {
+    public synchronized boolean put(final ITicket value) {
         //ConcurrentHashMap doesn't allow null key or values
         if (value == null || value.getId() == null) throw new NullPointerException();
 
@@ -47,6 +50,8 @@ public class FastLruCacheAssistant extends BaseAssistant {
         if (putToNative(value)) {
             queue.add(value.getId());
             checkIsFulledStack();
+
+            lruCacheStatistics.onApplySpace(value.getSize());
             return super.put(value);
         }
         return false;
@@ -57,38 +62,30 @@ public class FastLruCacheAssistant extends BaseAssistant {
         if (getLruCacheStatistics().getUsage() >= getLruCacheStatistics().getLimitation()) {
             String lruKey = queue.poll();
             if (lruKey != null) {//really important .
+
                 ITicket outValue = super.pop(lruKey);
-                outValue.setStatus(TicketStatus.CACHE_STATUS_ON_CACHING);
-                mOnFulledListener.onMoveToDisk(outValue, removeFromNative(outValue.getNativeAddress()));
+
+                lruCacheStatistics.onRecycleSpace(outValue.getSize());
+
+                outValue.setStatus(TicketStatus.CACHE_STATUS_ON_CACHING);//.setStatus(int)' on a null object reference
+                mOnFulledListener.onMoveToDisk(outValue);
             }
         }
     }
 
     @Override
-    public void clearAllCache() {
+    public synchronized void clearAllCache() {
         super.clearAllCache();
         queue.clear();
-        NativeEntry.release();
-    }
-
-    private byte[] removeFromNative(final int address) {
-        byte[] result = NativeEntry.popData(address);
-        if (result != null) {
-            lruCacheStatistics.onRecycleSpace(result.length);
-        }
-        return result;
+//        NativeEntry.release();
     }
 
 
     private boolean putToNative(final ITicket ticket) {
-        byte[] data = ticket.getData();
-        final int address = NativeEntry.put(data);
-        if (address != 0) {
-            ticket.onCachedNative(address);
-            lruCacheStatistics.onApplySpace(data.length);
-        } else {
-            return false;
-        }
+        // creating object of ByteBuffer
+        // and allocating size capacity
+        final ByteBuffer bb = ticket.toNativeBuffer();
+        ticket.onCached(bb);
         return true;
     }
 
@@ -115,9 +112,13 @@ public class FastLruCacheAssistant extends BaseAssistant {
         return (stringBuilder.toString());
     }
 
-    public boolean remove(final String uuid) {
+    public synchronized boolean remove(final String uuid) {
         if (queue.contains(uuid)) {
-            pop(uuid);
+            ITicket ticket = pop(uuid);
+
+            if (ticket != null) {
+                lruCacheStatistics.onRecycleSpace(ticket.getSize());
+            }
             return true;
         }
         return false;

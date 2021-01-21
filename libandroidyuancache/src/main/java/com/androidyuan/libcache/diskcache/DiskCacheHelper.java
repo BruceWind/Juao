@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class DiskCacheHelper extends BaseAssistant {
 
-    private DiskLruCache mDiskCache;
+    private final DiskLruCache mDiskCache;
 
     public DiskCacheHelper(String url, long size) throws IOException {
         mDiskCache = DiskLruCache.open(new File(url), 1, 1, size);
@@ -106,7 +106,7 @@ public class DiskCacheHelper extends BaseAssistant {
     public ITicket pop(String uuid) {
         ITicket iTicket = super.pop(uuid);
         if (iTicket.getStatus() == TicketStatus.CACHE_STATUS_ONDISK) {
-            iTicket.resume(read(uuid));
+            iTicket.resume();
         }
         return iTicket;
     }
@@ -131,7 +131,7 @@ public class DiskCacheHelper extends BaseAssistant {
     @Override
     public boolean put(ITicket ticket) {
         try {
-            boolean result = save(ticket.getId(), ticket.getData());
+            boolean result = save(ticket.getId(), ticket.toNativeBuffer().array());
             if (result) {
                 ticket.onCachedDisk();
             }

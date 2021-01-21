@@ -16,15 +16,6 @@
 目前支持对Bitmap,Parcelable,Serializable进行Cache.其他暂不支持。未来会开发缓存byte[]的功能。
 
 ## 如何工作的？
-在Native内存和disk上存储您的数据。
+借助DirectBuffer启用更大的Native内存，超出我们定义的内存限制则会存在Disk上。
 
 
-## Build
-1. 高于3.6版本的Android Studio.
-2. 只在R20版本的ndk上面编译过，其他版本不保证编得过。
-3. Proguard :
-```
--keepclasseswithmembernames class * {
-    native <methods>;
-}
-```
