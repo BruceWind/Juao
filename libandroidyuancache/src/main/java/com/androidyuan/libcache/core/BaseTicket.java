@@ -1,11 +1,16 @@
 package com.androidyuan.libcache.core;
 
+import java.nio.ByteBuffer;
+
 public abstract class BaseTicket<T> implements ITicket<T> {
 
-    private String uuid = null;//
-    private int address;// native ticket
-    private int status;
+    protected ByteBuffer buffer;
+    private String uuid = null;
+    private volatile int status;
 
+    public ByteBuffer getBuffer() {
+        return buffer;
+    }
 
     public void setUuid(String id) {
         uuid = id;
@@ -19,7 +24,7 @@ public abstract class BaseTicket<T> implements ITicket<T> {
     @Override
     public void onCachedDisk() {
         setStatus(TicketStatus.CACHE_STATUS_ONDISK);
-        address = 0;
+        buffer.clear();
         emptyData();
     }
 
@@ -34,16 +39,10 @@ public abstract class BaseTicket<T> implements ITicket<T> {
     }
 
     @Override
-    public void onCachedNative(int address) {
-        this.address = address;
+    public void onCached(ByteBuffer b) {
+        this.buffer = b;
         emptyData();
         setStatus(TicketStatus.CACHE_STATUS_ON_NATIVE);
     }
-
-    @Override
-    public int getNativeAddress() {
-        return address;
-    }
-
 
 }

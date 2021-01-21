@@ -30,15 +30,6 @@ Currently,caching for Bitmap, Parcelable, and Serializable were supported by **H
 
 May I will develop caching byte[] in the future.
 
-
-## Build 
-
-
-1. Version of Android Studio must be above V3.6.
-2. I built with NDK r20  and never build with other versions of ndk. I can't promise it successfully build on other version.You can try.
-3. Proguard :
-```
--keepclasseswithmembernames class * {
-    native <methods>;
-}
-```
+## How it work?
+Use [DirectByteBuffer](https://chromium.googlesource.com/android_tools/+/2403/sdk/sources/android-22/java/nio/DirectByteBuffer.java) 
+ to cache bytes on memory which is physical memory. If cache bytes over limitation that you set, bytes will be cached on disk.

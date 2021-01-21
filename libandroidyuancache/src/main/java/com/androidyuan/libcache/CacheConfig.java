@@ -2,15 +2,15 @@ package com.androidyuan.libcache;
 
 import android.text.TextUtils;
 
-public class CacheConfig {
+public final class CacheConfig {
 
     public static final long MB = 1024 * 1024;
     private static final long MINIUM_MEM_CACHESIZE_MB = 100 * MB;
     private static final long MINIUM_DISK_CACHESIZE_MB = 100 * MB;
 
-    private long sizeOfMemCache;
-    private long sizeOfDiskCache;
-    private String diskDir;
+    private final long sizeOfMemCache;
+    private final long sizeOfDiskCache;
+    private final String diskDir;
 
     private CacheConfig(long sizeOfMem, long sizeOfDiskm, String dir) {
         this.sizeOfDiskCache = sizeOfDiskm;

@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         //If you want to set the size,pls look at {@CacheConfig}.
-        FastHugeStorage.getInstance().init(new CacheConfig.Builder().setDiskDir(getExternalCacheDir().toString()).build());
+        FastHugeStorage.getInstance().init(new CacheConfig.Builder().setDiskDir(getCacheDir().toString()).build());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

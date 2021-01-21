@@ -22,12 +22,12 @@ public class FastHugeStorage implements OnFulledListener {
     private static final String TAG = "StorageManager";
 
     private static final int COUTN_THREAD = 8;
-    private static FastHugeStorage sStorage;
+    private static final FastHugeStorage sStorage = new FastHugeStorage();
     private final Handler handler = new Handler(Looper.getMainLooper());
 
 
     private final UUIDHexGenerator uuidGenerator = new UUIDHexGenerator();
-    private ExecutorService threadPool = Executors.newFixedThreadPool(COUTN_THREAD);
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(COUTN_THREAD);
     private DiskCacheHelper diskCacheHelper;
     private FastLruCacheAssistant fastLruCacheAssistant;
 
@@ -35,9 +35,6 @@ public class FastHugeStorage implements OnFulledListener {
     }
 
     public static FastHugeStorage getInstance() {
-        if (sStorage == null) {
-            sStorage = new FastHugeStorage();
-        }
         return sStorage;
     }
 
@@ -46,7 +43,7 @@ public class FastHugeStorage implements OnFulledListener {
      *
      * @param config
      */
-    public void init(CacheConfig config) {
+    public synchronized void init(CacheConfig config) {
         try {
             fastLruCacheAssistant = new FastLruCacheAssistant(config.getSizeOfMemCache(), this);
             diskCacheHelper = new DiskCacheHelper(config.getDiskDir(), config.getSizeOfDiskCache());
@@ -113,13 +110,13 @@ public class FastHugeStorage implements OnFulledListener {
 
 
     @Override
-    public void onMoveToDisk(final ITicket value, final byte[] bytes) {
+    public void onMoveToDisk(final ITicket value) {
         if (value == null) return;
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    boolean suc = diskCacheHelper.save(value.getId(), bytes);
+                    boolean suc = diskCacheHelper.save(value.getId(), value.getBuffer().array());
                     if (suc) {
                         value.setStatus(TicketStatus.CACHE_STATUS_ONDISK);
                     } else {

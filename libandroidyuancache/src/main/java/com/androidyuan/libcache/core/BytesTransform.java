@@ -6,37 +6,36 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
 
 /**
- * jni entry
+ * It is transformer to transform object and bytes.
  */
 public final class BytesTransform {
 
     /**
-     * Byte数组转对象
+     * DirectByteBuffer -> bytes -> Object
      *
-     * @param bytes
+     * @param buffer it is DirectByteBuffer
      * @return
      */
-    public static Object bytesToSerializable(byte[] bytes) {
+    public static Object bytesToSerializable(ByteBuffer buffer) {
         Object obj = null;
         ByteArrayInputStream byteArrayInputStream = null;
         ObjectInputStream objectInputStream = null;
         try {
-            byteArrayInputStream = new ByteArrayInputStream(bytes);
+            byteArrayInputStream = new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.position());
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
             obj = objectInputStream.readObject();
         } catch (Exception e) {
             e.printStackTrace();
-            //LOGGER.error("byteArrayToObject failed, " + e);
         } finally {
             if (byteArrayInputStream != null) {
                 try {
                     byteArrayInputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    //LOGGER.error("close byteArrayInputStream failed, " + e);
                 }
             }
             if (objectInputStream != null) {
@@ -44,7 +43,6 @@ public final class BytesTransform {
                     objectInputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    //LOGGER.error("close objectInputStream failed, " + e);
                 }
             }
         }
@@ -71,14 +69,12 @@ public final class BytesTransform {
 
         } catch (IOException e) {
             e.printStackTrace();
-            //LOGGER.error("objectToByteArray failed, " + e);
         } finally {
             if (objectOutputStream != null) {
                 try {
                     objectOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    //LOGGER.error("close objectOutputStream failed, " + e);
                 }
             }
             if (byteArrayOutputStream != null) {
@@ -86,7 +82,6 @@ public final class BytesTransform {
                     byteArrayOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    //LOGGER.error("close byteArrayOutputStream failed, " + e);
                 }
             }
 

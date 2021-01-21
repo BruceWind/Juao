@@ -1,5 +1,7 @@
 package com.androidyuan.libcache.core;
 
+import java.nio.ByteBuffer;
+
 public interface ITicket<T> {
 
     String getId();
@@ -12,17 +14,17 @@ public interface ITicket<T> {
 
     void setStatus(int status);
 
-    void onCachedNative(int address);
+    void onCached(ByteBuffer buffer);
 
-    int getNativeAddress();
-
-
-    byte[] getData();
+    ByteBuffer toNativeBuffer();
 
     void emptyData();
 
-    void resume(byte[] bytes);
+    void resume();
 
+    ByteBuffer getBuffer();
 
     T getBean();
+
+    int getSize();
 }

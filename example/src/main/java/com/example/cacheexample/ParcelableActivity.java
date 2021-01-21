@@ -1,6 +1,7 @@
 package com.example.cacheexample;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,7 +11,7 @@ import com.androidyuan.libcache.data.ParcelTicket;
 import com.example.cacheexample.bean.ParceEngineer;
 
 /**
- * This class test that {@ParcelTicket} is used to cache {@Parcelable}.
+ * This class  is used to test caching {@link ParcelTicket}.
  */
 public class ParcelableActivity extends Activity {
 
@@ -28,6 +29,7 @@ public class ParcelableActivity extends Activity {
 
 
     public void onClickPut(View view) {
+        textView.setTextColor(Color.LTGRAY);
         uuid = FastHugeStorage.getInstance().put(new ParcelTicket(new ParceEngineer()));
         textView.setText("put Engineer result :\n " + uuid);
     }
@@ -36,9 +38,11 @@ public class ParcelableActivity extends Activity {
         if (uuid != null) {
             ParceEngineer engineer = (ParceEngineer) FastHugeStorage.getInstance().popTicket(uuid).getBean();
             textView.setText("pop Engineer from cache : \n" + engineer);
+            textView.setTextColor(Color.BLACK);
             uuid = null;//You has to empty uuid.
         } else {
-            textView.setText("pls click put.");
+            textView.setText("pls click put ben before.");
+            textView.setTextColor(Color.RED);
         }
     }
 }

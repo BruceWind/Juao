@@ -1,5 +1,13 @@
 package com.androidyuan.libcache.fastcache;
 
+
+import java.nio.ByteBuffer;
+
+/**
+ * why deprecated this class?
+ * Using {@link ByteBuffer#allocateDirect} instead of {@link NativeEntry} creating memory in native.
+ */
+@Deprecated
 public final class NativeEntry {
 
     static {

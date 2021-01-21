@@ -7,6 +7,6 @@ import com.androidyuan.libcache.core.ITicket;
  */
 public interface OnFulledListener {
 
-    void onMoveToDisk(ITicket value, byte[] bytes);
+    void onMoveToDisk(ITicket value);
 
 }

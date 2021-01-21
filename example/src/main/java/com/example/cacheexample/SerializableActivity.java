@@ -1,6 +1,7 @@
 package com.example.cacheexample;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,7 +11,7 @@ import com.androidyuan.libcache.data.SerializableTicket;
 import com.example.cacheexample.bean.SerlzEngineer;
 
 /**
- * This class test that {@SerializableTicket} is used to cache {@SerializableTicket}.
+ * This class  is used to test caching {@link SerializableTicket}.
  */
 public class SerializableActivity extends Activity {
 
@@ -28,6 +29,7 @@ public class SerializableActivity extends Activity {
 
 
     public void onClickPut(View view) {
+        textView.setTextColor(Color.LTGRAY);
         uuid = FastHugeStorage.getInstance().put(new SerializableTicket(new SerlzEngineer()));
         textView.setText("put Engineer result :\n " + uuid);
     }
@@ -36,9 +38,11 @@ public class SerializableActivity extends Activity {
         if (uuid != null) {
             SerlzEngineer engineer = (SerlzEngineer) FastHugeStorage.getInstance().popTicket(uuid).getBean();
             textView.setText("pop Engineer from cache : \n" + engineer);
+            textView.setTextColor(Color.BLACK);
             uuid = null;//You has to empty uuid.
         } else {
-            textView.setText("pls click put.");
+            textView.setText("pls click put btn before!");
+            textView.setTextColor(Color.RED);
         }
     }
 }
