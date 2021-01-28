@@ -1,0 +1,30 @@
+# .github/workflows/runUnitTestOnGitHub.yml
+# GitHub Actions documentation
+# => https://docs.github.com/en/actions
+name: runUnitTest
+on:
+  push:
+  pull_request:
+    branches: [ master, main ]
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew runUTOnGitHub
+
+
+      # Execute Gradle commands in GitHub Actions workflows
+      # => https://github.com/marketplace/actions/gradle-command
+#      - uses: eskatos/gradle-command-action@v1
+#        with:
+#          arguments: runUTOnGitHub
+#          wrapper-cache-enabled: true
+#          dependencies-cache-enabled: true
+#          configuration-cache-enabled: true

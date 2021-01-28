@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +18,10 @@ import java.util.List;
 
 public class BitmapAdapter extends RecyclerView.Adapter<BitmapAdapter.BTViewHolder> {
 
-    private volatile List<String> list = new ArrayList<>();
-    private TextView txtSize;
+    private final List<String> list = new ArrayList<>();
 
-    public BitmapAdapter(List<String> list, TextView txtSize) {
+    public BitmapAdapter(List<String> list) {
         this.list.addAll(list);
-        this.txtSize = txtSize;
     }
 
     @NonNull
@@ -37,7 +34,6 @@ public class BitmapAdapter extends RecyclerView.Adapter<BitmapAdapter.BTViewHold
     public void onBindViewHolder(@NonNull BTViewHolder holder, int position) {
         position = holder.getAdapterPosition();
         holder.bind(list.get(position));
-        txtSize.setText("Cache Size : " + (FastHugeStorage.getInstance().getMemCacheUsage() / 1024) + "KB");
     }
 
     @Override
@@ -63,7 +59,7 @@ public class BitmapAdapter extends RecyclerView.Adapter<BitmapAdapter.BTViewHold
         public String uuid;
         public Bitmap bitmap;
 
-        private ImageView imgView;
+        private final ImageView imgView;
 
         public BTViewHolder(@NonNull View itemView) {
             super(itemView);

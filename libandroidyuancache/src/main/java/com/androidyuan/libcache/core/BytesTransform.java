@@ -1,5 +1,8 @@
 package com.androidyuan.libcache.core;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,7 +28,11 @@ public final class BytesTransform {
         ByteArrayInputStream byteArrayInputStream = null;
         ObjectInputStream objectInputStream = null;
         try {
-            byteArrayInputStream = new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.position());
+            if (buffer.isDirect()) {
+                byteArrayInputStream = new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.position());
+            } else {
+                byteArrayInputStream = new ByteArrayInputStream(buffer.array());
+            }
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
             obj = objectInputStream.readObject();
         } catch (Exception e) {
@@ -89,4 +96,42 @@ public final class BytesTransform {
         return bytes;
     }
 
+
+    public static byte[] marshallParcelable(Parcelable parceable) {
+        Parcel parcel = Parcel.obtain();
+        parceable.writeToParcel(parcel, 0);
+        byte[] bytes = parcel.marshall();
+        parcel.recycle();
+        return bytes;
+    }
+
+    public static byte[] marshallParcelable(Parcelable parceable, Parcel parcel) {
+        parceable.writeToParcel(parcel, 0);
+        byte[] bytes = parcel.marshall();
+        parcel.recycle();
+        return bytes;
+    }
+
+    public static Parcel unmarshallToParcelable(byte[] bytes) {
+        Parcel parcel = Parcel.obtain();
+        parcel.unmarshall(bytes, 0, bytes.length);
+        parcel.setDataPosition(0); // This is extremely important!
+        return parcel;
+    }
+
+
+    //DirectByteBuffer cant directly to array due to it has offset.
+    public static Parcel unmarshallToParcelable(ByteBuffer buffer, final int len) {
+        Parcel parcel = Parcel.obtain();
+        parcel.unmarshall(buffer.array(), buffer.arrayOffset(), len);
+        parcel.setDataPosition(0); // This is extremely important!
+        return parcel;
+    }
+
+    public static <T> T unmarshallToParcelable(byte[] bytes, Parcelable.Creator<T> creator) {
+        Parcel parcel = unmarshallToParcelable(bytes);
+        T result = creator.createFromParcel(parcel);
+        parcel.recycle();
+        return result;
+    }
 }

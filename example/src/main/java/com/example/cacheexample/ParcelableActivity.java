@@ -31,17 +31,17 @@ public class ParcelableActivity extends Activity {
     public void onClickPut(View view) {
         textView.setTextColor(Color.LTGRAY);
         uuid = FastHugeStorage.getInstance().put(new ParcelTicket(new ParceEngineer()));
-        textView.setText("put Engineer result :\n " + uuid);
+        textView.setText("put en engineer result :\n " + uuid);
     }
 
     public void onClickPop(View view) {
         if (uuid != null) {
             ParceEngineer engineer = (ParceEngineer) FastHugeStorage.getInstance().popTicket(uuid).getBean();
-            textView.setText("pop Engineer from cache : \n" + engineer);
+            textView.setText("pop en engineer from cache : \n" + engineer);
             textView.setTextColor(Color.BLACK);
             uuid = null;//You has to empty uuid.
         } else {
-            textView.setText("pls click put ben before.");
+            textView.setText("pls click put button before.");
             textView.setTextColor(Color.RED);
         }
     }

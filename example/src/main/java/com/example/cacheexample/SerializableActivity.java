@@ -31,13 +31,13 @@ public class SerializableActivity extends Activity {
     public void onClickPut(View view) {
         textView.setTextColor(Color.LTGRAY);
         uuid = FastHugeStorage.getInstance().put(new SerializableTicket(new SerlzEngineer()));
-        textView.setText("put Engineer result :\n " + uuid);
+        textView.setText("put an engineer result :\n " + uuid);
     }
 
     public void onClickPop(View view) {
         if (uuid != null) {
             SerlzEngineer engineer = (SerlzEngineer) FastHugeStorage.getInstance().popTicket(uuid).getBean();
-            textView.setText("pop Engineer from cache : \n" + engineer);
+            textView.setText("pop an engineer from cache : \n" + engineer);
             textView.setTextColor(Color.BLACK);
             uuid = null;//You has to empty uuid.
         } else {

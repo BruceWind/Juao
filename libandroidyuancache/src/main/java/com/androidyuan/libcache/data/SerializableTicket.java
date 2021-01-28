@@ -20,12 +20,18 @@ public class SerializableTicket extends BaseTicket<Serializable> {
         size = data.length;
     }
 
+
     @Override
     public ByteBuffer toNativeBuffer() {
         ByteBuffer temp = ByteBuffer.allocateDirect(data.length);
         temp.put(data);
         data = null;
         return temp;
+    }
+
+    @Override
+    public byte[] toBytes() {
+        return BytesTransform.serializableToBytes(serializable);
     }
 
     @Override
@@ -47,5 +53,10 @@ public class SerializableTicket extends BaseTicket<Serializable> {
     @Override
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public void resumeFromDisk(byte[] data) {
+        serializable = (Serializable) BytesTransform.bytesToSerializable(ByteBuffer.wrap(data));
     }
 }

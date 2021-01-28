@@ -28,3 +28,13 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+//add gradle task for testing "module/src/test/java"  ./gradlew mylibrary:connectedAndroidTest
+tasks.register("runUTOnGitHub") {
+    dependsOn(":example:lint",
+            ":example:testDebugUnitTest" ,":libandroidyuancache:testDebugUnitTest",//run submodule/src/test/
+            ":example:connectedAndroidTest" ,":libandroidyuancache:connectedAndroidTest"//run submodule/src/androidTest/
+    )
+    group = "github"
+    description = "runs on GitHub Action "
+}

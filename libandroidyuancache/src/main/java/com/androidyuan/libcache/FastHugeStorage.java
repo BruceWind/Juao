@@ -8,7 +8,6 @@ import com.androidyuan.libcache.core.TicketStatus;
 import com.androidyuan.libcache.core.UUIDHexGenerator;
 import com.androidyuan.libcache.diskcache.DiskCacheHelper;
 import com.androidyuan.libcache.fastcache.FastLruCacheAssistant;
-import com.androidyuan.libcache.fastcache.OnFulledListener;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
@@ -18,7 +17,7 @@ import java.util.concurrent.Executors;
  * The  {@link FastHugeStorage#put(ITicket)} } will return a UUID.It is a String type.
  * When you want to pop data from {@link }FastHugeStorage}, you has to call {@link FastHugeStorage#popTicket(String)}.
  */
-public class FastHugeStorage implements OnFulledListener {
+public class FastHugeStorage {
     private static final String TAG = "StorageManager";
 
     private static final int COUTN_THREAD = 8;
@@ -45,7 +44,7 @@ public class FastHugeStorage implements OnFulledListener {
      */
     public synchronized void init(CacheConfig config) {
         try {
-            fastLruCacheAssistant = new FastLruCacheAssistant(config.getSizeOfMemCache(), this);
+            fastLruCacheAssistant = new FastLruCacheAssistant(config.getSizeOfMemCache());
             diskCacheHelper = new DiskCacheHelper(config.getDiskDir(), config.getSizeOfDiskCache());
             //clear();
         } catch (IOException e) {
@@ -61,17 +60,30 @@ public class FastHugeStorage implements OnFulledListener {
         ticket.setUuid(uuidGenerator.generate());
         synchronized (this) {
             if (fastLruCacheAssistant.put(ticket)) {
-                return ticket.getId();
-            }
-            if (diskCacheHelper.put(ticket)) {//I think this line always can't be run.
+                threadPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        checkIsPoolFulled();
+                    }
+                });
                 return ticket.getId();
             }
             return null;
         }
     }
 
+    private void checkIsPoolFulled() {
+        if (fastLruCacheAssistant.getLruCacheStatistics().getUsage() >= fastLruCacheAssistant.getLruCacheStatistics().getLimitation()) {
+            final ITicket ticket = fastLruCacheAssistant.poll();
+            if (ticket != null) {//really important .
+                ticket.setStatus(TicketStatus.CACHE_STATUS_ON_CACHING);//.setStatus(int)' on a null object reference
+                diskCacheHelper.put(ticket);
+            }
+        }
+    }
+
     /**
-     * Might this method spend much time.
+     * Might this method spend much time due to native poll is full.
      * After you call this,ticket of uuid and its data will be removed.
      *
      * @param uuid
@@ -93,6 +105,12 @@ public class FastHugeStorage implements OnFulledListener {
         }
     }
 
+    /**
+     * This method is asynchronous to pop data.Then it will callback call on MainThread.
+     *
+     * @param uuid
+     * @param listener
+     */
     public void popTicket(final String uuid, final OnPopCompleteListener listener) {
         threadPool.execute(new Runnable() {
             @Override
@@ -109,30 +127,6 @@ public class FastHugeStorage implements OnFulledListener {
     }
 
 
-    @Override
-    public void onMoveToDisk(final ITicket value) {
-        if (value == null) return;
-        threadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    boolean suc = diskCacheHelper.save(value.getId(), value.getBuffer().array());
-                    if (suc) {
-                        value.setStatus(TicketStatus.CACHE_STATUS_ONDISK);
-                    } else {
-                        value.setStatus(TicketStatus.CACHE_STATUS_WAS_LOST);//oooh, but has to put to diskcahce.
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    value.setStatus(TicketStatus.CACHE_STATUS_WAS_LOST);//oooh,
-                } finally {
-                    diskCacheHelper.onlyPut(value);
-                }
-            }
-        });
-
-    }
-
     /**
      * After you call this method,you still can call {@FastHugeStorage#popTicket()}.
      */
@@ -146,6 +140,10 @@ public class FastHugeStorage implements OnFulledListener {
         });
     }
 
+    public void reset() {
+        //TODO
+    }
+
 
     /**
      * @return result size doesn't contain disk cache size.
@@ -155,6 +153,6 @@ public class FastHugeStorage implements OnFulledListener {
     }
 
     public long getDiskCacheUsage() {
-        return 0;//TODO
+        return diskCacheHelper.getUsageSize();
     }
 }

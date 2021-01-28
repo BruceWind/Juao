@@ -1,17 +1,19 @@
-package com.example.cacheexample;
+package com.androidyuan.libcache;
 
 import android.util.Log;
 
 import com.androidyuan.libcache.fastcache.NativeEntry;
 
 import org.junit.Assert;
-import org.junit.Test;
 
+/**
+ * JNITest does not need to run due to my disabling ndk.
+ */
 public class JNITest {
     private final int a = 10, b = 11;
     private final String TAG = "JNITest";
 
-    @Test
+    //    @Test
     public void test() {
 
         byte[] dataResult = null;
@@ -59,21 +61,10 @@ public class JNITest {
 
 
         try {
-            Thread.sleep(4000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-//        Assert.assertEquals(NativeEntry.removeData(point), false);
-//        point = NativeEntry.put(data);
-//        Assert.assertEquals(NativeEntry.removeData(point), true);
-//
-//        point = NativeEntry.put(data);
-//        Assert.assertEquals(NativeEntry.removeData(point), true);
-//        NativeEntry.release();
-//        Assert.assertEquals(NativeEntry.removeData(point), false);
-
 
     }
 

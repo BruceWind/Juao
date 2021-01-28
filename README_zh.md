@@ -1,9 +1,11 @@
 [English](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README.md)
 
-# HugestMemroyStorage
+# HugestMemroyStorage![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)![runUnitTest](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/runUnitTest/badge.svg)
 如果你有很大的内存需求,或许您需要这个库帮您做内存cache。
 
 当您有巨量的内存需要在Android平台进行计算时，或许您也会遇到内存吃紧的问题，所以我做了这个库。（当然，有这种需求的人不多）
+
+如果你有很大的内存需求,或许您需要这个库帮您做内存缓存。
 
 如果您需要在低于Android 8.0的机器上做超大的图片处理，可能会需要这个库。我这里做了个Bitmap的cache的例子，访问非常快在我的测试中，我把一张全景图片分割为多张，然后再展示。
 

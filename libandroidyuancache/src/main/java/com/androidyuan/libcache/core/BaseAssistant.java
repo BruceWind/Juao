@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class BaseAssistant implements ICacheAssistant {
 
     //this Map is not important,maybe i will remove it.
-    private volatile Map<String, ITicket> cache = new ConcurrentHashMap<String, ITicket>();
+    private final Map<String, ITicket> cache = new ConcurrentHashMap<String, ITicket>();
 
     /**
      * only check from HashMap.
@@ -48,6 +48,7 @@ public abstract class BaseAssistant implements ICacheAssistant {
         cache.clear();
     }
 
+
     /**
      * When cache is pulled all item,it will be clear.
      *
@@ -55,7 +56,6 @@ public abstract class BaseAssistant implements ICacheAssistant {
      */
     protected synchronized void moveAll(Map<String, ITicket> temptyMap) {
         temptyMap.putAll(cache);
-        cache.clear();
     }
 
 }
