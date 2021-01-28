@@ -18,13 +18,19 @@ public interface ITicket<T> {
 
     ByteBuffer toNativeBuffer();
 
+    byte[] toBytes();
+
     void emptyData();
 
     void resume();
+
+    void checkStatusMustBe(int status);
 
     ByteBuffer getBuffer();
 
     T getBean();
 
     int getSize();
+
+    void resumeFromDisk(byte[] data);
 }

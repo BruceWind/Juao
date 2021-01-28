@@ -25,7 +25,15 @@ public abstract class BaseTicket<T> implements ITicket<T> {
     public void onCachedDisk() {
         setStatus(TicketStatus.CACHE_STATUS_ONDISK);
         buffer.clear();
+        buffer = null;
         emptyData();
+    }
+
+    @Override
+    public void checkStatusMustBe(int status) {
+        if (this.status != status) {
+            throw new IllegalStateException(String.format("Ticket status was not %d.", status));
+        }
     }
 
     @Override

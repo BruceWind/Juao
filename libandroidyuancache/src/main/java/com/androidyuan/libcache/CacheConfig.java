@@ -2,11 +2,15 @@ package com.androidyuan.libcache;
 
 import android.text.TextUtils;
 
+/**
+ * This class is suppose to initiate {@link FastHugeStorage}.
+ * You can use {@link Builder} to construct {@link CacheConfig} readily.
+ */
 public final class CacheConfig {
 
-    public static final long MB = 1024 * 1024;
-    private static final long MINIUM_MEM_CACHESIZE_MB = 100 * MB;
-    private static final long MINIUM_DISK_CACHESIZE_MB = 100 * MB;
+    private static final long MB = 1024 * 1024;
+    private static final long MINIUM_MEM_CACHESIZE_MB = 200 * MB;
+    private static final long MINIUM_DISK_CACHESIZE_MB = 400 * MB;
 
     private final long sizeOfMemCache;
     private final long sizeOfDiskCache;

@@ -3,7 +3,9 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
-
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 29
@@ -46,6 +48,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     testImplementation 'junit:junit:4.12'
+    // required if you want to use Mockito for unit tests
+    testImplementation 'org.mockito:mockito-core:2.7.22'
+    // required if you want to use Mockito for Android tests
+    androidTestImplementation 'org.mockito:mockito-android:2.7.22'
+    androidTestImplementation 'com.android.support.test:runner:0.4'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

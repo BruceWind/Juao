@@ -53,6 +53,11 @@ public class BitmapTicket extends BaseTicket<Bitmap> {
     }
 
     @Override
+    public byte[] toBytes() {
+        return toNativeBuffer().array();
+    }
+
+    @Override
     public void setStatus(int s) {
         super.setStatus(s);
         if (s == TicketStatus.CACHE_STATUS_WAS_LOST) {
@@ -93,5 +98,11 @@ public class BitmapTicket extends BaseTicket<Bitmap> {
     @Override
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public void resumeFromDisk(byte[] read) {
+        bitmap = Bitmap.createBitmap(width, height, config);
+        bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(read));//resume data
     }
 }

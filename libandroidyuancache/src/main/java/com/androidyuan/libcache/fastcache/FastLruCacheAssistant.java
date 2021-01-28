@@ -7,7 +7,9 @@ import com.androidyuan.libcache.core.TicketStatus;
 
 import java.nio.ByteBuffer;
 import java.util.AbstractQueue;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -15,31 +17,27 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class FastLruCacheAssistant extends BaseAssistant {
 
-
-    private final OnFulledListener mOnFulledListener;
-
     private volatile AbstractQueue<String> queue = null;//this property is used to make lru algorithm.
 
     private FastLruCacheStatistics lruCacheStatistics = null;
 
-    public FastLruCacheAssistant(long space, final OnFulledListener listener) {
-        this.mOnFulledListener = listener;
+    public FastLruCacheAssistant(long space) {
         queue = new ConcurrentLinkedQueue<String>();
         this.lruCacheStatistics = new FastLruCacheStatistics(space);
     }
 
 
     public synchronized ITicket pop(final String key) {
-        if (queue.contains(key)) {
-            //Recently accessed, hence move it to the tail
-            queue.remove(key);
-            ITicket cacheValue = super.pop(key);
-            cacheValue.resume();
 
-            lruCacheStatistics.onRecycleSpace(cacheValue.getSize());
-            return cacheValue;
+        //Recently accessed, hence move it to the tail
+        queue.remove(key);
+        ITicket cacheValue = super.pop(key);
+        cacheValue.resume();
+        lruCacheStatistics.onRecycleSpace(cacheValue.getSize());
+        if (cacheValue != null) {
+
         }
-        return null;
+        return cacheValue;
     }
 
     public synchronized boolean put(final ITicket value) {
@@ -49,35 +47,41 @@ public class FastLruCacheAssistant extends BaseAssistant {
 
         if (putToNative(value)) {
             queue.add(value.getId());
-            checkIsFulledStack();
-
             lruCacheStatistics.onApplySpace(value.getSize());
+
             return super.put(value);
         }
         return false;
 
     }
 
-    private void checkIsFulledStack() {
-        if (getLruCacheStatistics().getUsage() >= getLruCacheStatistics().getLimitation()) {
-            String lruKey = queue.poll();
-            if (lruKey != null) {//really important .
 
-                ITicket outValue = super.pop(lruKey);
+    @Override
+    public synchronized void clearAllCache() {
+        lruCacheStatistics.reset();
+        Map<String, ITicket> tempCache = new HashMap<>();
+        super.moveAll(tempCache);
+        super.clearAllCache();
 
-                lruCacheStatistics.onRecycleSpace(outValue.getSize());
 
-                outValue.setStatus(TicketStatus.CACHE_STATUS_ON_CACHING);//.setStatus(int)' on a null object reference
-                mOnFulledListener.onMoveToDisk(outValue);
-            }
+        for (String key : tempCache.keySet()) {
+            tempCache.get(key).setStatus(TicketStatus.CACHE_STATUS_HAS_RELEASED);
+            tempCache.get(key).getBuffer().clear();
+            tempCache.clear();
         }
     }
 
     @Override
-    public synchronized void clearAllCache() {
-        super.clearAllCache();
-        queue.clear();
-//        NativeEntry.release();
+    public long getUsageSize() {
+        return getLruCacheStatistics().getUsage();
+    }
+
+    private byte[] removeFromNative(final int address) {
+        byte[] result = NativeEntry.popData(address);
+        if (result != null) {
+            lruCacheStatistics.onRecycleSpace(result.length);
+        }
+        return result;
     }
 
 
@@ -122,5 +126,13 @@ public class FastLruCacheAssistant extends BaseAssistant {
             return true;
         }
         return false;
+    }
+
+    public ITicket poll() {
+        String key = queue.poll();
+        if (key != null) {
+            return pop(key);
+        }
+        return null;
     }
 }

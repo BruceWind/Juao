@@ -10,6 +10,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -17,7 +18,7 @@
         android:id="@+id/txt_cache_size"
         android:textSize="16sp"
         android:textColor="#333"
-        android:background="#DDD"
+        android:background="#88FFFFFF"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

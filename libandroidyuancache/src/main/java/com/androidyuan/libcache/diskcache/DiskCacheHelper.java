@@ -3,6 +3,7 @@ package com.androidyuan.libcache.diskcache;
 import com.androidyuan.libcache.core.BaseAssistant;
 import com.androidyuan.libcache.core.ITicket;
 import com.androidyuan.libcache.core.TicketStatus;
+import com.androidyuan.libcache.data.BitmapTicket;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,7 +23,7 @@ public class DiskCacheHelper extends BaseAssistant {
 
 
     /**
-     * doesn't matter that bytes have been saved.
+     * doesn't matter that bytes have been rewrite.
      *
      * @param key
      * @param bytes
@@ -105,9 +106,9 @@ public class DiskCacheHelper extends BaseAssistant {
 
     public ITicket pop(String uuid) {
         ITicket iTicket = super.pop(uuid);
-        if (iTicket.getStatus() == TicketStatus.CACHE_STATUS_ONDISK) {
-            iTicket.resume();
-        }
+        iTicket.checkStatusMustBe(TicketStatus.CACHE_STATUS_ONDISK);
+        iTicket.resumeFromDisk(read(uuid));
+        iTicket.setStatus(TicketStatus.CACHE_STATUS_IS_RESUMED);
         return iTicket;
     }
 
@@ -115,44 +116,60 @@ public class DiskCacheHelper extends BaseAssistant {
     public void clearAllCache() {
         if (mDiskCache != null) {
             Map<String, ITicket> tempCache = new HashMap<>();
-            super.moveAll(tempCache);
+            moveAll(tempCache);
+            super.clearAllCache();
             for (String key : tempCache.keySet()) {
                 try {
+                    tempCache.get(key).setStatus(TicketStatus.CACHE_STATUS_HAS_RELEASED);
                     mDiskCache.remove(key);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
         }
+    }
+
+    @Override
+    public long getUsageSize() {
+        return mDiskCache != null ? mDiskCache.size() : 0;
     }
 
 
     @Override
-    public boolean put(ITicket ticket) {
+    public boolean put(ITicket value) {
+
         try {
-            boolean result = save(ticket.getId(), ticket.toNativeBuffer().array());
-            if (result) {
-                ticket.onCachedDisk();
+
+            boolean suc = true;
+            if (value.getBuffer().isReadOnly()) {
+                suc = false;
+            } else if (value.getBuffer().isDirect() && !(value instanceof BitmapTicket)) {
+//                byte[] byteArray = new byte[value.getSize()];
+//                value.getBuffer().get(byteArray, value.getBuffer().arrayOffset(), value.getSize());
+//                save(value.getId(), byteArray);
+
+                save(value.getId(), value.toBytes());
+                value.getBuffer().clear();
+            } else {
+                save(value.getId(), value.getBuffer().array());
+                value.getBuffer().clear();
             }
-            super.put(ticket);
-            return result;
+            if (suc) {
+                value.onCachedDisk();
+                value.setStatus(TicketStatus.CACHE_STATUS_ONDISK);
+            } else {
+                value.setStatus(TicketStatus.CACHE_STATUS_WAS_LOST);
+            }
+            return suc && super.put(value);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            value.setStatus(TicketStatus.CACHE_STATUS_WAS_LOST);
+        } finally {
         }
+        return false;
     }
 
-    /**
-     * just record ticket.
-     *
-     * @param ticket
-     * @return
-     */
-    public boolean onlyPut(ITicket ticket) {
-        super.put(ticket);
-        return true;
-    }
+
 
     @Override
     public boolean remove(String uuid) {
@@ -177,7 +194,7 @@ public class DiskCacheHelper extends BaseAssistant {
      * @return
      * @throws IOException
      */
-    public boolean save(String key, byte[] bytes) throws IOException {
+    private boolean save(String key, byte[] bytes) throws IOException {
 
         if (!hasBeenSavedOnDisk(key)) {//if hasnt saved.
             DiskLruCache.Editor editor = mDiskCache.edit(key);
@@ -187,5 +204,13 @@ public class DiskCacheHelper extends BaseAssistant {
             editor.commit();
         }
         return true;
+    }
+
+    public void deleteAll() {
+        try {
+            mDiskCache.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

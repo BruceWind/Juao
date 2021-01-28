@@ -1,4 +1,4 @@
-# HugestMemroyStorage ![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)
+# HugestMemroyStorage ![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)![runUnitTest](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/runUnitTest/badge.svg)
 
 [中文](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README_zh.md)
 

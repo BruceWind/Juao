@@ -12,4 +12,6 @@ public interface ICacheAssistant {
 
     void clearAllCache();
 
+    long getUsageSize();
+
 }

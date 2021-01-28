@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +29,8 @@ public class BitmapActivity extends Activity {
 
 
     private RecyclerView recyclerView;
+    private TextView txtCache;
+    private Handler handler;
 
     @Override
     public void onCreate(Bundle save) {
@@ -34,7 +39,25 @@ public class BitmapActivity extends Activity {
         setContentView(R.layout.activity_test_bitmap_cache);
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new BitmapAdapter(getTicketIds(), (TextView) findViewById(R.id.txt_cache_size)));
+        recyclerView.setAdapter(new BitmapAdapter(getTicketIds()));
+        txtCache = findViewById(R.id.txt_cache_size);
+        handler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                if (msg.what == 1000) {
+                    txtCache.setText("Cache Size : " + (FastHugeStorage.getInstance().getMemCacheUsage() / 1024) + "KB" + "\n"
+                            +
+                            "Disk Size : " + (FastHugeStorage.getInstance().getDiskCacheUsage() / 1024) + "KB" + "\n"
+                            +
+                            "size of all data is " + ((FastHugeStorage.getInstance().getMemCacheUsage() + FastHugeStorage.getInstance().getDiskCacheUsage()) / 1024) + "KB"
+                    );
+                    handler.sendEmptyMessageDelayed(1000, 60);
+                }
+                super.handleMessage(msg);
+            }
+        };
+
+        handler.sendEmptyMessageDelayed(1000, 500);
 
     }
 
@@ -44,7 +67,7 @@ public class BitmapActivity extends Activity {
      *
      * @return too many uuid insert to a list.  Maybe size of list is 76.
      */
-    private List<String> getTicketIds() {
+    public List<String> getTicketIds() {
         List<String> list = new ArrayList<>();
         int[] resArr = {R.mipmap.panorama_1,
                 R.mipmap.panorama_2,
@@ -75,7 +98,11 @@ public class BitmapActivity extends Activity {
     }
 
 
-
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+    }
 }

@@ -12,7 +12,9 @@
         android:debuggable="true"
         android:theme="@style/AppTheme"
         tools:ignore="HardcodedDebugMode">
-        <activity android:name="com.example.cacheexample.MainActivity">
+        <activity
+            android:name="com.example.cacheexample.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

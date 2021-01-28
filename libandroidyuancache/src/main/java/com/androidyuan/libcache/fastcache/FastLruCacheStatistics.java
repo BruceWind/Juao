@@ -1,11 +1,13 @@
 package com.androidyuan.libcache.fastcache;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /*
  */
 public class FastLruCacheStatistics {
-    private long limitSize = 0;
-    private long usageSpace = 0;
-    private int putCount = 0;
+    private final long limitationSize;
+    private final AtomicLong putCount = new AtomicLong();
+    private volatile long usageSpace = 0;
 
     /**
      * Create a new statistics object with a particular size that should match
@@ -14,7 +16,7 @@ public class FastLruCacheStatistics {
      * @param spaceSize the size of the cache space
      */
     public FastLruCacheStatistics(long spaceSize) {
-        this.limitSize = spaceSize;
+        this.limitationSize = spaceSize;
     }
 
     /**
@@ -23,7 +25,7 @@ public class FastLruCacheStatistics {
      * @return the size of the cache
      */
     public long getLimitation() {
-        return this.limitSize;
+        return this.limitationSize;
     }
 
 
@@ -35,11 +37,11 @@ public class FastLruCacheStatistics {
      * Increment the number of 'put' requests
      */
     private void incrementPutCount() {
-        this.putCount++;
+        this.putCount.incrementAndGet();
     }
 
     private void decrementPutCount() {
-        this.putCount--;
+        this.putCount.decrementAndGet();
     }
 
     public void onApplySpace(final long space) {
@@ -52,12 +54,13 @@ public class FastLruCacheStatistics {
     public void onRecycleSpace(final long space) {
 
         if (space < 1) throw new IllegalArgumentException("'space' is a wrong param.");
-
-        this.usageSpace -= space;
-
+        usageSpace -= space;
         if (usageSpace < 0) throw new IllegalArgumentException("There is dumplication calls.");
 
         decrementPutCount();
     }
 
+    public void reset() {
+        usageSpace = 0;
+    }
 }

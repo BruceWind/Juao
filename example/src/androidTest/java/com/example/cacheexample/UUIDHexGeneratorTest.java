@@ -1,10 +1,12 @@
 package com.example.cacheexample;
 
-import android.util.Log;
-
 import com.androidyuan.libcache.core.UUIDHexGenerator;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UUIDHexGeneratorTest {
 
@@ -14,10 +16,17 @@ public class UUIDHexGeneratorTest {
 
     @Test
     public void test() {
-        for (int index = 0; index < 100; index++) {
-            Log.w(TAG, generator.generate());
+        List<String> uuidList = new ArrayList<>();
+
+        for (int index = 0; index < 10000; index++) {
+            uuidList.add(generator.generate());
         }
 
+        for (int i = 0; i < uuidList.size(); i++) {
+            for (int j = i + 1; j < uuidList.size(); j++) {
+                Assert.assertNotEquals(uuidList.get(i), uuidList.get(j));
+            }
+        }
     }
 
 
