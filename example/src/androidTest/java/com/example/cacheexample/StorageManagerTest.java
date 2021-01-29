@@ -22,7 +22,7 @@ public class StorageManagerTest {
 
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        FastHugeStorage.getInstance().init(new CacheConfig.Builder().setDiskDir(appContext.getExternalCacheDir().toString()).build());
+        FastHugeStorage.getInstance().init(new CacheConfig.Builder(appContext).setDiskDir(appContext.getExternalCacheDir().toString()).build());
 
         new Thread(new Runnable() {
             @Override

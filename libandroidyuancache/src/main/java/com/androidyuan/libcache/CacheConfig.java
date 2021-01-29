@@ -1,6 +1,10 @@
 package com.androidyuan.libcache;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.text.TextUtils;
+
+import java.io.File;
 
 /**
  * This class is suppose to initiate {@link FastHugeStorage}.
@@ -39,29 +43,43 @@ public final class CacheConfig {
         private long sizeOfMemCache;
         private long sizeOfDiskCache;
         private String diskDir;
+        private final Context context;
 
-        public Builder setSizeOfMemCache(long sizeOfMemCache) {
+        public Builder(Context context) {
+            this.context = context.getApplicationContext();
+        }
 
-            if (sizeOfMemCache < MINIUM_MEM_CACHESIZE_MB) {
-                throw new IllegalArgumentException("sizeOfMemCache is too small.");
-            }
-            this.sizeOfMemCache = sizeOfMemCache;
+        public Builder setSizeOfMemCache(long size) {
+            this.sizeOfMemCache = size < 1 ? MINIUM_MEM_CACHESIZE_MB : size;
             return this;
         }
 
 
-        public Builder setSizeOfDiskCache(long sizeOfDiskCache) {
+        public Builder setSizeOfDiskCache(long size) {
             if (sizeOfDiskCache < MINIUM_DISK_CACHESIZE_MB) {
                 throw new IllegalArgumentException("sizeOfDisk is too small.");
             }
-            this.sizeOfDiskCache = sizeOfDiskCache;
+            this.sizeOfDiskCache = size;
             return this;
         }
 
 
         public Builder setDiskDir(String diskDir) {
+
             this.diskDir = diskDir;
             return this;
+        }
+
+        /**
+         * get size of device RAM.
+         *
+         * @return {long}
+         */
+        private long getMemorySizeInBytes() {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+            ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+            activityManager.getMemoryInfo(memoryInfo);
+            return memoryInfo.totalMem;
         }
 
 
@@ -69,11 +87,19 @@ public final class CacheConfig {
             if (TextUtils.isEmpty(diskDir)) {
                 throw new IllegalArgumentException("Reject: You have not set diskDir.Pls set it.");
             }
-            if (sizeOfMemCache < MINIUM_MEM_CACHESIZE_MB) {
-                sizeOfMemCache = MINIUM_MEM_CACHESIZE_MB;
-            }
             if (sizeOfDiskCache < MINIUM_DISK_CACHESIZE_MB) {
                 sizeOfDiskCache = MINIUM_DISK_CACHESIZE_MB;
+            }
+            if (sizeOfMemCache == 0) {
+                sizeOfMemCache = getMemorySizeInBytes() / 4;
+            }
+            if (TextUtils.isEmpty(diskDir)) {
+                throw new IllegalArgumentException("Reject : diskDir is null.");
+            } else {
+                File file = new File(diskDir);
+                if (!file.isDirectory()) {
+                    throw new IllegalArgumentException("Reject : It is unexpected value that diskDir is not directory.");
+                }
             }
             return new CacheConfig(sizeOfMemCache, sizeOfDiskCache, diskDir);
         }
