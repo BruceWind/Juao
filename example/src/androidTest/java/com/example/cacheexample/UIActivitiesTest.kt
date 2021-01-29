@@ -15,6 +15,7 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import org.hamcrest.Matchers
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,9 +38,9 @@ class UIActivitiesTest {
     @Before
     fun startMainActivityFromHomeScreen() {
 
-
         // Initialize UiDevice instance
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        Assert.assertNotNull(device)
 
         // Start from the home screen
         device!!.pressHome()
@@ -55,27 +56,18 @@ class UIActivitiesTest {
         val intent = context.packageManager
                 .getLaunchIntentForPackage(PACKAGE)
 
+        Assert.assertNotNull(intent)
 
         // Clear out any previous instances
         intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
 
         // Wait for the app to appear
-        device!!.wait(Until.hasObject(By.pkg(PACKAGE).depth(0)),
-                LAUNCH_TIMEOUT)
+        device!!.wait(Until.hasObject(By.pkg(PACKAGE).depth(0)), LAUNCH_TIMEOUT)
     }
 
     @Test
-    fun changeText_sameActivity() {
-
-
-        // Launch a simple calculator app
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val intent = context.packageManager
-                .getLaunchIntentForPackage(PACKAGE)
-        intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        // Clear out any previous instances
-        context.startActivity(intent)
+    fun testEntry() {
         device!!.wait(Until.hasObject(By.pkg(PACKAGE).depth(0)), LAUNCH_TIMEOUT)
         testBitmapCache()
         device!!.waitForIdle(IDLE_TIMEOUT)
