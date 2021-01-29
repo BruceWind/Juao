@@ -7,9 +7,8 @@ import com.androidyuan.libcache.core.TicketStatus;
 
 import java.nio.ByteBuffer;
 import java.util.AbstractQueue;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -59,15 +58,14 @@ public class FastLruCacheAssistant extends BaseAssistant {
     @Override
     public synchronized void clearAllCache() {
         lruCacheStatistics.reset();
-        Map<String, ITicket> tempCache = new HashMap<>();
+        ConcurrentHashMap<String, ITicket> tempCache = new ConcurrentHashMap<>();
         super.moveAll(tempCache);
         super.clearAllCache();
 
-
         for (String key : tempCache.keySet()) {
             tempCache.get(key).setStatus(TicketStatus.CACHE_STATUS_HAS_RELEASED);
+            assert tempCache.get(key).getBuffer() != null;
             tempCache.get(key).getBuffer().clear();
-            tempCache.clear();
         }
     }
 

@@ -10,8 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DiskCacheHelper extends BaseAssistant {
 
@@ -115,7 +114,7 @@ public class DiskCacheHelper extends BaseAssistant {
     @Override
     public void clearAllCache() {
         if (mDiskCache != null) {
-            Map<String, ITicket> tempCache = new HashMap<>();
+            ConcurrentHashMap<String, ITicket> tempCache = new ConcurrentHashMap<>();
             moveAll(tempCache);
             super.clearAllCache();
             for (String key : tempCache.keySet()) {

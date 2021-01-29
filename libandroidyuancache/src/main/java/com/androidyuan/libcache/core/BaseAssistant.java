@@ -52,10 +52,10 @@ public abstract class BaseAssistant implements ICacheAssistant {
     /**
      * When cache is pulled all item,it will be clear.
      *
-     * @param temptyMap
+     * @param emptyMap must be kind of ConcurrentHashMap,else type could occur exception.
      */
-    protected synchronized void moveAll(Map<String, ITicket> temptyMap) {
-        temptyMap.putAll(cache);
+    protected synchronized void moveAll(ConcurrentHashMap<String, ITicket> emptyMap) {
+        emptyMap.putAll(cache);
     }
 
 }

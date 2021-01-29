@@ -23,6 +23,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.notNullValue;
 
+/**
+ * This class is used to test all feature from activities.
+ */
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
 public class UIActivitiesTest {
