@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.androidyuan.libcache.FastHugeStorage;
 import com.androidyuan.libcache.data.BitmapTicket;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,8 @@ public class BitmapActivity extends Activity {
 
     private RecyclerView recyclerView;
     private TextView txtCache;
-    private Handler handler;
+    //avoid leaking memory.
+    private NonLeakHandler handler;
 
     @Override
     public void onCreate(Bundle save) {
@@ -41,21 +43,7 @@ public class BitmapActivity extends Activity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new BitmapAdapter(getTicketIds()));
         txtCache = findViewById(R.id.txt_cache_size);
-        handler = new Handler() {
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                if (msg.what == 1000) {
-                    txtCache.setText("Cache Size : " + (FastHugeStorage.getInstance().getMemCacheUsage() / 1024) + "KB" + "\n"
-                            +
-                            "Disk Size : " + (FastHugeStorage.getInstance().getDiskCacheUsage() / 1024) + "KB" + "\n"
-                            +
-                            "size of all data is " + ((FastHugeStorage.getInstance().getMemCacheUsage() + FastHugeStorage.getInstance().getDiskCacheUsage()) / 1024) + "KB"
-                    );
-                    handler.sendEmptyMessageDelayed(1000, 60);
-                }
-                super.handleMessage(msg);
-            }
-        };
+        handler = new NonLeakHandler(txtCache);
 
         handler.sendEmptyMessageDelayed(1000, 500);
 
@@ -105,4 +93,30 @@ public class BitmapActivity extends Activity {
             handler.removeCallbacksAndMessages(null);
         }
     }
+
+    static class NonLeakHandler extends Handler {
+
+        private final WeakReference<TextView> mView;
+
+        public NonLeakHandler(TextView v) {
+            mView = new WeakReference<>(v);
+        }
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (msg.what == 1000) {
+                if (mView.get() != null) {
+                    mView.get().setText("Cache Size : " + (FastHugeStorage.getInstance().getMemCacheUsage() / 1024) + "KB" + "\n"
+                            +
+                            "Disk Size : " + (FastHugeStorage.getInstance().getDiskCacheUsage() / 1024) + "KB" + "\n"
+                            +
+                            "size of all data is " + ((FastHugeStorage.getInstance().getMemCacheUsage() + FastHugeStorage.getInstance().getDiskCacheUsage()) / 1024) + "KB"
+                    );
+                    sendEmptyMessageDelayed(1000, 60);
+                }
+            }
+            super.handleMessage(msg);
+        }
+    }
+
 }

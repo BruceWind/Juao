@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="15sp"
-        android:text="put new engineer"
+        android:text="@string/put_new_engineer"
         android:onClick="onClickPut" />
 
     <Button
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="15sp"
-        android:text="pop engineer"
+        android:text="@string/pop_engineer"
         android:onClick="onClickPop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

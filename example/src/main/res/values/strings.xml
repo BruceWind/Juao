@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">HugestFastestMemoryCache</string>
+    <string name="btn_test_serilizable">Test Serilizable cache</string>
+    <string name="test_parcelable">Test Parcelable cache</string>
+    <string name="test_bitmap">Test Bitmap cache</string>
+    <string name="pop_engineer">pop engineer</string>
+    <string name="put_new_engineer">put new engineer</string>
 </resources>

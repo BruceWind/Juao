@@ -12,7 +12,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="0px"
-        android:layout_height="0px"/>
+        android:layout_height="0px"
+        android:contentDescription="split_item" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
