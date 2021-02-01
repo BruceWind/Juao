@@ -57,6 +57,7 @@ public class FastHugeStorage {
      * @return
      */
     public String put(ITicket ticket) {
+        checkIfInited();
         ticket.setUuid(uuidGenerator.generate());
         synchronized (this) {
             if (fastLruCacheAssistant.put(ticket)) {
@@ -73,6 +74,7 @@ public class FastHugeStorage {
     }
 
     private void checkIsPoolFulled() {
+        checkIfInited();
         if (fastLruCacheAssistant.getLruCacheStatistics().getUsage() >= fastLruCacheAssistant.getLruCacheStatistics().getLimitation()) {
             final ITicket ticket = fastLruCacheAssistant.poll();
             if (ticket != null) {//really important .
@@ -90,6 +92,7 @@ public class FastHugeStorage {
      * @return maybe is null.
      */
     public ITicket popTicket(String uuid) {
+        checkIfInited();
         ITicket result = null;
         synchronized (this) {
             if (fastLruCacheAssistant != null && fastLruCacheAssistant.hasCached(uuid)) {
@@ -112,6 +115,7 @@ public class FastHugeStorage {
      * @param listener
      */
     public void popTicket(final String uuid, final OnPopCompleteListener listener) {
+        checkIfInited();
         threadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -149,7 +153,12 @@ public class FastHugeStorage {
      * @return result size doesn't contain disk cache size.
      */
     public long getMemCacheUsage() {
+        checkIfInited();
         return fastLruCacheAssistant.getLruCacheStatistics().getUsage();
+    }
+
+    private void checkIfInited(){
+        if(fastLruCacheAssistant == null || diskCacheHelper==null) throw new IllegalStateException("Reject:You haven't call FastHugeStorage#init().");
     }
 
     public long getDiskCacheUsage() {

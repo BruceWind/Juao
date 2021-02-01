@@ -7,7 +7,9 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.androidyuan.libcache.CacheConfig;
 import com.androidyuan.libcache.FastHugeStorage;
+import com.androidyuan.libcache.data.SerializableTicket;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.Serializable;
@@ -59,11 +61,11 @@ public class StorageManagerTest {
     }
 
     private void testPutPop() {
-        //TODO
-//        String uuid = FastHugeStorage.getInstance().put(new SerializableTicket(new ObjectToByteCls()));
-//        ObjectToByteCls bean = (ObjectToByteCls) FastHugeStorage.getInstance().popTicket(uuid).getBean();
-//        Assert.assertEquals(2, bean.i);
-//        Log.d(TAG, "uudi : " + uuid);
+
+        String uuid = FastHugeStorage.getInstance().put(new SerializableTicket(new ObjectToByteCls()));
+        ObjectToByteCls bean = (ObjectToByteCls) FastHugeStorage.getInstance().popTicket(uuid).getBean();
+        Assert.assertEquals(2, bean.i);
+        Log.d(TAG, "uudi : " + uuid);
     }
 
 
