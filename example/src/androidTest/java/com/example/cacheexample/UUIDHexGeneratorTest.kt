@@ -5,6 +5,9 @@ import org.junit.Assert
 import org.junit.Test
 import java.util.*
 
+/**
+ * This class is used to test [UUIDHexGenerator] generate ID is unique in the world.
+ */
 class UUIDHexGeneratorTest {
     val generator = UUIDHexGenerator()
 
