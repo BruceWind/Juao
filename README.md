@@ -10,28 +10,23 @@ For most mobile phones, the running memory (ram) is very large, but often the me
 
 When you have a huge amount of memory that needs to be calculated on the Android device, may you think your can't alloc enough memory.
 
-So I made this library. (It is correct that just few people will been the situation.)
+So I made this library. (It is fact that just few people will get in the situation.)
+
+If you need to deal with super-large image on devices which is lower than Android 8.0, you may need this library.
+
+I made an example of a Bitmap caching in there. The accessing is really fast. In the example, I divided a panoramic image into many images, and then merged those to display.
 
 
-If you need to do super-large image processing on devices which is lower than Android 8.0, you may need this library.
+I don't recommend using this repo to cache bitmaps on devices higher than 8.0, because [bitmap pixel data was already stored in native heap when device higher than 8.0](https://developer.android.google.cn/topic/performance/graphics/manage-memory).
 
-
-I made an example of a Bitmap cache here. The access is really fast. In the example, I divided a panoramic image into many images, and then displayed those.
-
-
-I don't recommend using this Repo to cache bitmaps on devices higher than 8.0, because [bitmap pixel data was already stored in native heap when device higher than 8.0](https://developer.android.google.cn/topic/performance/graphics/manage-memory).
-
-As your memory caching in **Juao**, both put and pop will be very fast.
-
+While your memory is caching in Juao, both put and pop will be very fast.
 
 In addition, I would enable about 40% of the physical RAM.
 
 
+Currently,caching for Bitmap, Parcelable, and Serializable were supported by **Juao**. It capable of supporting other types. 
 
-
-Currently,caching for Bitmap, Parcelable, and Serializable were supported by **HugestFastestMemoryCache**. It couldn't support other types. 
-
-May I will develop caching byte[] in the future.
+I may develop caching byte[] in the future.
 
 ## How it work?
 Use [DirectByteBuffer](https://chromium.googlesource.com/android_tools/+/2403/sdk/sources/android-22/java/nio/DirectByteBuffer.java) 
