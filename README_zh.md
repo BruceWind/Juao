@@ -2,7 +2,7 @@
 
 # 巨鳌
 
-![](ps://github.com/BruceWind/Juao/raw/master/image/juao.png)
+![](https://github.com/BruceWind/Juao/raw/master/image/juao.png)
 
 
 ![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)![runUnitTest](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/runUnitTest/badge.svg)
