@@ -2,29 +2,26 @@
 
 [中文](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README_zh.md)
 
-> In traditonal Chinese legend, [Juao](https://www.wikiwand.com/zh-cn/%E9%B3%8C) (巨鳌) is a hugest animal, looks like a tortoise could float up moutain or land from the ocean.
+> [Juao](https://www.wikiwand.com/zh-cn/%E9%B3%8C) (巨鳌) is a hugest animal in traditonal Chinese legend,  looks like a tortoise could float up moutain or land from the ocean.
 
 ![](https://github.com/BruceWind/Juao/raw/master/image/juao.png)
 
-For most mobile phones, the running memory (ram) is very large, but often the memory that app can use is not much than [App heap size](https://developer.android.com/topic/performance/memory#CheckHowMuchMemory) .
+In most Android devices, enven though the phycial memory (RAM) is very large, but often the memory that app can use is not much than [App heap size](https://developer.android.com/topic/performance/memory#CheckHowMuchMemory).
+When you have a huge amount of memory that needs to calculate on Android, may you think your can't alloc enough memory.
+So I made this library. (It is fact that just few people get in the situation.)
+If you need to deal with super-large image on devices which is lower than Android 8.0, you must need this library.
 
-When you have a huge amount of memory that needs to be calculated on the Android device, may you think your can't alloc enough memory.
-
-So I made this library. (It is fact that just few people will get in the situation.)
-
-If you need to deal with super-large image on devices which is lower than Android 8.0, you may need this library.
-
-I made an example of a Bitmap caching in there. The accessing is really fast. In the example, I divided a panoramic image into many images, and then merged those to display.
+While your memory is caching in **Juao**, both put and pop will be very fast.
+I made an example of caching Bitmap in there. The bitmap put and get from cache is really fast. In the example, I divided a panoramic image into many images, and then merged those to display.
 
 
 I don't recommend using this repo to cache bitmaps on devices higher than 8.0, because [bitmap pixel data was already stored in native heap when device higher than 8.0](https://developer.android.google.cn/topic/performance/graphics/manage-memory).
 
-While your memory is caching in Juao, both put and pop will be very fast.
 
 In addition, I would enable about 40% of the physical RAM.
 
 
-Currently,caching for Bitmap, Parcelable, and Serializable were supported by **Juao**. It capable of supporting other types. 
+Currently,caching for **Bitmap, Parcelable, and Serializable** are supported by **Juao**. It capable of supporting other types. 
 
 I may develop caching byte[] in the future.
 
