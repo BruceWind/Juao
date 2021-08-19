@@ -2,11 +2,11 @@
 
 [中文](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README_zh.md)
 
-> [Juao](https://www.wikiwand.com/zh-cn/%E9%B3%8C) (巨鳌) is a hugest animal in traditonal Chinese legend,  looks like a tortoise could float up moutain or land from the ocean.
+> [Juao](https://www.wikiwand.com/zh-cn/%E9%B3%8C) (巨鳌), a hugest animal in traditonal Chinese legend, looks like a tortoise could float up moutain or land from the ocean.
 
 ![](https://github.com/BruceWind/Juao/raw/master/image/juao.png)
 
-In most Android devices, enven though the phycial memory (RAM) is very large, but often the memory that app can use is not much than [App heap size](https://developer.android.com/topic/performance/memory#CheckHowMuchMemory).
+In most Android devices, enven though the phycial memory (RAM) is very large, but often the memory that app can use is not much more than [JVM heap size](https://developer.android.com/topic/performance/memory#CheckHowMuchMemory).
 When you have a huge amount of memory that needs to calculate on Android, may you think your can't alloc enough memory.
 So I made this library. (It is fact that just few people get in the situation.)
 If you need to deal with super-large image on devices which is lower than Android 8.0, you must need this library.
