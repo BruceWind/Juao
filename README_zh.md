@@ -1,11 +1,11 @@
-[English](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README.md)
+[English](https://github.com/BruceWind/Juao/blob/master/README.md)
 
 # 巨鳌
 
 ![](https://github.com/BruceWind/Juao/raw/master/image/juao.png)
 
 
-![Build APK](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/Build%20APK/badge.svg?branch=master)![runUnitTest](https://github.com/BruceWind/HugestFastestMemoryCache/workflows/runUnitTest/badge.svg)
+![Build APK](https://github.com/BruceWind/Juao/workflows/Build%20APK/badge.svg?branch=master)![runUnitTest](https://github.com/BruceWind/Juao/workflows/runUnitTest/badge.svg)
 
 
 对于大部分手机来说,物理内存（ram）已经非常得大，而往往您申请的内存无法超过[JVM堆大小限制](https://developer.android.com/topic/performance/memory#CheckHowMuchMemory)。

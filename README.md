@@ -1,6 +1,6 @@
 # Juao ![Build APK](https://github.com/BruceWind/Juao/workflows/Build%20APK/badge.svg?branch=master)![runUnitTest](https://github.com/BruceWind/Juao/workflows/runUnitTest/badge.svg)
 
-[中文](https://github.com/BruceWind/HugestFastestMemoryCache/blob/master/README_zh.md)
+[中文](https://github.com/BruceWind/Juao/blob/master/README_zh.md)
 
 > [Juao](https://www.wikiwand.com/zh-cn/%E9%B3%8C) (巨鳌), a hugest animal in traditonal Chinese legend, looks like a tortoise could float up moutain or land from the ocean.
 
