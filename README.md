@@ -6,7 +6,7 @@
 
 ![](https://github.com/BruceWind/Juao/raw/master/image/juao.png)
 
-In most Android devices, enven though the phycial memory (RAM) is very large, but often the memory that app can use is not much more than [JVM heap size](https://developer.android.com/topic/performance/memory#CheckHowMuchMemory).
+In most Android devices, enven though the physical memory (RAM) is very large, but often the memory that app can use is not much more than [JVM heap size](https://developer.android.com/topic/performance/memory#CheckHowMuchMemory).
 When you have a huge amount of memory that needs to calculate on Android, may you think your can't alloc enough memory.
 So I made this library. (It is fact that just few people get in the situation.)
 If you need to deal with super-large image on devices which is lower than Android 8.0, you must need this library.
